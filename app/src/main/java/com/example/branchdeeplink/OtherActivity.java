@@ -1,24 +1,25 @@
 package com.example.branchdeeplink;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -28,6 +29,10 @@ public class OtherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other);
+
+        StrictMode.ThreadPolicy policy =
+                new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         TextView textView = findViewById(R.id.textView);
         Intent intent = getIntent();
@@ -52,8 +57,9 @@ public class OtherActivity extends AppCompatActivity {
                 "~referring_link",
         };
 
-        Dictionary received = new Hashtable();
+        Dictionary<String, String> received = new Hashtable<>();
         for (String param: params) {
+            assert lpJson != null;
             if (lpJson.has(param)) {
                 try {
                     received.put(param, lpJson.getString(param));
@@ -65,24 +71,24 @@ public class OtherActivity extends AppCompatActivity {
 
         String img_url = received.get("$og_image_url") == null ?
                 "https://avatars.githubusercontent.com/u/16432725?v=4?s=400"
-                : (String) received.get("$og_image_url");
-        new DownloadImageFromInternet(findViewById(R.id.imageView))
-                .execute(img_url);
+                : received.get("$og_image_url");
+        ImageView imageView = findViewById(R.id.imageView);
+        imageView.setImageBitmap(getBitmapFromURL(img_url));
 
-        String title = (String) received.get("$og_title");
-        String m_title = (String) received.get("$marketing_title");
-        String description = (String) received.get("$og_description");
-        String source = (String) received.get("source");
-        String feature = (String) received.get("~feature");
-        String campaign = (String) received.get("~campaign");
-        String channel = (String) received.get("~channel");
-        String ref_link = (String) received.get("~referring_link");
+        String title = received.get("$og_title");
+        String m_title = received.get("$marketing_title");
+        String description = received.get("$og_description");
+        String source = received.get("source");
+        String feature = received.get("~feature");
+        String campaign = received.get("~campaign");
+        String channel = received.get("~channel");
+        String ref_link = received.get("~referring_link");
 
         textView.setText(Html.fromHtml(String.format(
                 "<p>You opened a Deep Link with following details</p>%s%s%s%s%s"
                 , title!=null ? "<b>"+title+"</b><br>"
                         : m_title!=null ? "<b>"+m_title+"</b><br>" : ""
-                , description.isEmpty() ? "Description: NA<br>" : "Description: "+description+"<br>"
+                , description != null && description.isEmpty() ? "Description: NA<br>" : "Description: "+description+"<br>"
                 , campaign!=null ? "Campaign: <b>"+campaign+"</b>" : "NA"
                 , source!=null ? " on <b>"+source+"</b><br>" : " on <b>Branch</b><br>"
                 , channel!=null && feature!=null && ref_link!=null ?
@@ -93,32 +99,27 @@ public class OtherActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
-        ImageView imageView;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 
-        public DownloadImageFromInternet(ImageView imageView) {
-            this.imageView = imageView;
-            Toast.makeText(getApplicationContext(),
-                    "Please wait, it may take a few minute...",
-                    Toast.LENGTH_SHORT).show();
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String imageURL = urls[0];
-            Bitmap bimage = null;
-            try {
-                InputStream in = new java.net.URL(imageURL).openStream();
-                bimage = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
-            }
-            return bimage;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            Log.e("src",src);
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            Log.e("Bitmap","returned");
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Exception",e.getMessage());
+            return null;
         }
     }
 }

@@ -2,16 +2,12 @@ package com.example.branchdeeplink;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import org.json.JSONException;
-
-import java.io.Serializable;
 import java.util.Calendar;
 
 import io.branch.indexing.BranchUniversalObject;
@@ -28,14 +24,23 @@ public class LauncherActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("myapp", "Launcher onCreated");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
-        Log.d("myapp", "started");
         shareMyLink();
     }
 
     @Override
     public void onStart() {
+        Log.d("myapp", "Launcher onStart");
+        if (getIntent() != null) {
+            Log.d("myapp", "got intent");
+        } else {
+            Log.d("myapp", "did not get intent");
+        }
+        Intent intent = getIntent();
+        setIntent(intent);
+        intent.putExtra("branch_force_new_session", true);
         super.onStart();
         Branch.sessionBuilder(this)
                 .withCallback(branchReferralInitListener)
@@ -44,7 +49,14 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume() {
+        Log.d("myapp", "Launcher onResume");
+        super.onResume();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
+        Log.d("myapp", "Launcher onNewIntent");
         super.onNewIntent(intent);
         setIntent(intent);
         // if activity is in foreground (or in backstack but partially visible) launching the same
@@ -57,14 +69,20 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     private final Branch.BranchReferralInitListener branchReferralInitListener = (linkProperties, error) -> {
-        assert linkProperties != null;
-        Log.d("myapp", "lp detail: " + linkProperties.toString());
+        if (linkProperties != null) {
+            Log.d("myapp", "lp detail: " + linkProperties.toString());
+        } else {
+            Log.d("myapp", "received an empty link properties");
+        }
         if (error == null) {
+            assert linkProperties != null;
             if (linkProperties.has("~referring_link")) {
                 Intent intent = new Intent(LauncherActivity.this, OtherActivity.class);
                 intent.putExtra("lp", String.valueOf(linkProperties));
+                intent.putExtra("branch_force_new_session", true);
                 Log.d("myapp", "goto other activity from listener");
                 startActivity(intent);
+                // comment following finish out if want to keep initial page alive
                 finish();
             }
         } else {
@@ -151,6 +169,7 @@ public class LauncherActivity extends AppCompatActivity {
                 Intent intent = new Intent(LauncherActivity.this, SharedActivity.class);
                 intent.putExtra("link", sharedLink);
                 intent.putExtra("channel", sharedChannel);
+                intent.putExtra("branch_force_new_session", true);
                 Log.d("myapp", "goto other activity from buo");
                 startActivity(intent);
                 finish();
@@ -158,6 +177,8 @@ public class LauncherActivity extends AppCompatActivity {
 
             @Override
             public void onChannelSelected(String channelName) {
+                Log.d("myapp","selected sharing channel: " + channelName);
+
             }
         };
 
