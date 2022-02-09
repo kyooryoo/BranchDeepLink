@@ -79,7 +79,6 @@ public class LauncherActivity extends AppCompatActivity {
             if (linkProperties.has("~referring_link")) {
                 Intent intent = new Intent(LauncherActivity.this, OtherActivity.class);
                 intent.putExtra("lp", String.valueOf(linkProperties));
-                intent.putExtra("branch_force_new_session", true);
                 Log.d("myapp", "goto other activity from listener");
                 startActivity(intent);
                 // comment following finish out if want to keep initial page alive
@@ -95,8 +94,6 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     private void onClick(View view) {
-        final String fallback_url = "https://pan.baidu.com/s/1igwjpQeIKDbDLgQCiKlGog?pwd=mi9m";
-
         BranchUniversalObject buo = new BranchUniversalObject()
                 .setCanonicalIdentifier("branch_deep_link/2022")
                 .setCanonicalUrl("https://help.branch.io/using-branch/docs/creating-a-deep-link")
@@ -120,12 +117,26 @@ public class LauncherActivity extends AppCompatActivity {
                 .setCustomerEventAlias("play_with_deep_link")
                 .logEvent(LauncherActivity.this);
 
+        final String android_url_in = "https://pan.baidu.com/s/1igwjpQeIKDbDLgQCiKlGog?pwd=mi9m";
+        final String android_url = "https://help.branch.io/zh/developers-hub/docs/android-sdk-overview";
+        final String ios_url = "";
+        final String ios_wechat_url = "";
+        final String ipad_url = "";
+        final String fallback_url = "https://help.branch.io/";
+        final String after_click_url = "https://branch.io/";
+
         LinkProperties lp = new LinkProperties()
                 .setChannel("copy")
                 .setFeature("sharing")
                 .setCampaign("Branch Home Work")
                 .setStage("new user")
                 .addControlParameter("$fallback_url", fallback_url)
+                .addControlParameter("$android_url", android_url)
+                .addControlParameter("$android_url_in", android_url_in)
+                .addControlParameter("$after_click_url", after_click_url)
+                .addControlParameter("$ios_url", ios_url)
+                .addControlParameter("$ios_wechat_url", ios_wechat_url)
+                .addControlParameter("$ipad_url", ipad_url)
                 .addControlParameter("custom_random",
                         Long.toString(Calendar.getInstance().getTimeInMillis()));
 
@@ -169,7 +180,6 @@ public class LauncherActivity extends AppCompatActivity {
                 Intent intent = new Intent(LauncherActivity.this, SharedActivity.class);
                 intent.putExtra("link", sharedLink);
                 intent.putExtra("channel", sharedChannel);
-                intent.putExtra("branch_force_new_session", true);
                 Log.d("myapp", "goto other activity from buo");
                 startActivity(intent);
                 finish();
