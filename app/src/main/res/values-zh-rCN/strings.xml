@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Branch 深度链接</string>
+    <string name="share_button">分享</string>
+    <string name="share">分享</string>
+    <string name="deep_link_screen">深度链接的详情</string>
+    <string name="textview">即将分享以上链接\n你可以修改以便分享其他链接</string>
+    <string name="content_description">输入你想分享的链接</string>
+    <string name="default_url">https://help.branch.io/developers-hub/docs/android-sdk-overview</string>
+    <string name="hint">https://help.branch.io/developers-hub</string>
+    <string name="back">退出</string>
+    <string name="img_from_deep_link">来自深度链接的图片</string>
+    <string name="shared_message">通过以下方式分享了链接：</string>
+    <string name="detail_message">您打开的深度链接拥有如下详情</string>
+    <string name="desp">描述</string>
+    <string name="campaign">活动</string>
+    <string name="shared_via">分享自</string>
+</resources>

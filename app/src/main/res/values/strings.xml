@@ -9,4 +9,9 @@
     <string name="hint">https://help.branch.io/developers-hub</string>
     <string name="back">QUIT</string>
     <string name="img_from_deep_link">img from deep link</string>
+    <string name="shared_message">Following URL is shared via</string>
+    <string name="detail_message">You opened a Deep Link with following details</string>
+    <string name="desp">Description</string>
+    <string name="campaign">Campaign</string>
+    <string name="shared_via">Shared via</string>
 </resources>

@@ -34,9 +34,10 @@ public class SharedActivity extends AppCompatActivity {
 
         String link = intent.getStringExtra("link");
         String channel = intent.getStringExtra("channel");
+        String shared_message = getString(R.string.shared_message);
 
         textView.setText(Html.fromHtml(String.format(
-                "<b>Following URL shared via %s:</b><br>%s", channel, link)));
+                "%s<br><b>%s</b><br>%s", shared_message, channel, link)));
         String img_url = "https://branch.io/img/logo_icon_black.png";
         ImageView imageView = findViewById(R.id.imageView);
         imageView.setImageBitmap(getBitmapFromURL(img_url));
@@ -46,8 +47,8 @@ public class SharedActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onRestart() {
+        super.onRestart();
         finish();
     }
 

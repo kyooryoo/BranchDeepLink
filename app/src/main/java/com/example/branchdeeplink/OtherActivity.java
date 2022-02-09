@@ -84,15 +84,22 @@ public class OtherActivity extends AppCompatActivity {
         String channel = received.get("~channel");
         String ref_link = received.get("~referring_link");
 
+        String detail_message = getString(R.string.detail_message);
+        String description_word = getString(R.string.desp);
+        String campaign_word = getString(R.string.campaign);
+        String shared_via = getString(R.string.shared_via);
         textView.setText(Html.fromHtml(String.format(
-                "<p>You opened a Deep Link with following details</p>%s%s%s%s%s"
+                "<p>%s:</p>%s%s%s%s%s"
+                , detail_message
                 , title!=null ? "<b>"+title+"</b><br>"
                         : m_title!=null ? "<b>"+m_title+"</b><br>" : ""
-                , description != null && description.isEmpty() ? "Description: NA<br>" : "Description: "+description+"<br>"
-                , campaign!=null ? "Campaign: <b>"+campaign+"</b>" : "NA"
-                , source!=null ? " on <b>"+source+"</b><br>" : " on <b>Branch</b><br>"
+                , description != null && description.isEmpty() ?
+                        description_word+": NA<br>" :
+                        description_word+": "+description+"<br>"
+                , campaign!=null ?  campaign_word+": <b>"+campaign+"</b>" : "NA"
+                , source!=null ? " @ <b>"+source+"</b><br>" : " @ <b>Branch</b><br>"
                 , channel!=null && feature!=null && ref_link!=null ?
-                        "Shared via <b>"+channel+"</b> of <b>"+feature+"</b> with:<br>"+ref_link : ""
+                        shared_via+" <b>"+channel+"</b> / <b>"+feature+"</b>:<br>"+ref_link : ""
         )));
 
         Button backButton = findViewById(R.id.button2);
@@ -100,8 +107,8 @@ public class OtherActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onRestart() {
+        super.onRestart();
         finish();
     }
 

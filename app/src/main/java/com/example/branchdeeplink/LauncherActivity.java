@@ -24,7 +24,6 @@ public class LauncherActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("myapp", "Launcher onCreated");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
         shareMyLink();
@@ -32,7 +31,6 @@ public class LauncherActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
-        Log.d("myapp", "Launcher onStart");
         if (getIntent() != null) {
             Log.d("myapp", "got intent");
         } else {
@@ -49,14 +47,7 @@ public class LauncherActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume() {
-        Log.d("myapp", "Launcher onResume");
-        super.onResume();
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
-        Log.d("myapp", "Launcher onNewIntent");
         super.onNewIntent(intent);
         setIntent(intent);
         // if activity is in foreground (or in backstack but partially visible) launching the same
@@ -70,7 +61,7 @@ public class LauncherActivity extends AppCompatActivity {
 
     private final Branch.BranchReferralInitListener branchReferralInitListener = (linkProperties, error) -> {
         if (linkProperties != null) {
-            Log.d("myapp", "lp detail: " + linkProperties.toString());
+            Log.d("myapp", "lp detail: " + linkProperties);
         } else {
             Log.d("myapp", "received an empty link properties");
         }
@@ -117,11 +108,12 @@ public class LauncherActivity extends AppCompatActivity {
                 .setCustomerEventAlias("play_with_deep_link")
                 .logEvent(LauncherActivity.this);
 
-        final String android_url_in = "https://pan.baidu.com/s/1igwjpQeIKDbDLgQCiKlGog?pwd=mi9m";
+        // following url demo your favorite country for which only allow the installation of this app
+        final String android_url_xx = "https://pan.baidu.com/s/1igwjpQeIKDbDLgQCiKlGog?pwd=mi9m";
         final String android_url = "https://help.branch.io/zh/developers-hub/docs/android-sdk-overview";
-        final String ios_url = "";
-        final String ios_wechat_url = "";
-        final String ipad_url = "";
+        final String ios_url = "https://github.com/kyooryoo/BranchDeepLink/blob/master/fallbacks/IOS.md";
+        final String ios_wechat_url = "https://github.com/kyooryoo/BranchDeepLink/blob/master/fallbacks/IOS_WECHAT.md";
+        final String ipad_url = "https://github.com/kyooryoo/BranchDeepLink/blob/master/fallbacks/IPAD.md";
         final String fallback_url = "https://help.branch.io/";
         final String after_click_url = "https://branch.io/";
 
@@ -132,7 +124,7 @@ public class LauncherActivity extends AppCompatActivity {
                 .setStage("new user")
                 .addControlParameter("$fallback_url", fallback_url)
                 .addControlParameter("$android_url", android_url)
-                .addControlParameter("$android_url_in", android_url_in)
+                .addControlParameter("$android_url_cn", android_url_xx)
                 .addControlParameter("$after_click_url", after_click_url)
                 .addControlParameter("$ios_url", ios_url)
                 .addControlParameter("$ios_wechat_url", ios_wechat_url)
