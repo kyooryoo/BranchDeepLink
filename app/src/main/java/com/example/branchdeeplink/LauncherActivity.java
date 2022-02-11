@@ -121,7 +121,8 @@ public class LauncherActivity extends AppCompatActivity {
                 .setChannel("copy")
                 .setFeature("sharing")
                 .setCampaign("Branch Home Work")
-                .setStage("new user")
+                .setStage("new engineer")
+                .addTag("Ling's Test")
                 .addControlParameter("$fallback_url", fallback_url)
                 .addControlParameter("$android_url", android_url)
                 .addControlParameter("$android_url_cn", android_url_xx)
@@ -134,7 +135,7 @@ public class LauncherActivity extends AppCompatActivity {
 
 //        buo.generateShortUrl(this, lp, (url, error) -> {
 //            if (error == null) {
-//                Log.d("myapp", "got my Branch link to share: " + url);
+//                Log.d("myapp", "Get short Deep Link: " + url);
 //            } else {
 //                Log.d("myapp", "Error: " + error.getMessage());
 //            }
